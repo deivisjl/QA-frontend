@@ -9,8 +9,17 @@ import Grid from '@mui/material/Grid2';
 import { useState } from 'react';
 import { Typography } from '@mui/material';
 
+import {useDispatch} from 'react-redux'
+import {login} from '../../../store/actions/auth'
+import { useHistory } from 'react-router-dom';
+
 export default function Login(){
+  
+  const dispatch = useDispatch()
+  let history = useHistory();
+
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState({
     error:false,
     message:"",
@@ -34,10 +43,12 @@ export default function Login(){
     {
       setError({
         error:true,
-        message:"Formato incorrecto",
+        message:"Correo no válido",
       })
+      return;
     }
     
+    dispatch(login({correo:email, password:password}, history))
   }
   return(
       <>
@@ -62,9 +73,9 @@ export default function Login(){
                       type="password" variant="outlined"
                       error={error.error}
                       helperText={error.message}
-                      value={email}
+                      value={password}
                       autoComplete='off'
-                      onChange={(e)=> setEmail(e.target.value)}
+                      onChange={(e)=> setPassword(e.target.value)}
                       fullWidth xs={{pb:2}}>
                     </TextField>
                   </CardContent>
