@@ -7,6 +7,7 @@ import Login from './components/Pages/Login/Login'
 
 import InboxIcon from "@mui/icons-material/Inbox";
 import DraftsIcon from "@mui/icons-material/Drafts";
+import ProtectedRoute from './components/Router/ProtectedRoute'
 
 const navLinks = [
   {
@@ -22,9 +23,9 @@ function App() {
   return (
     <>
       <Navbar navLinks={navLinks}/>
-      <Container sx={{ mt: 5}}>
+      <Container sx={{ mt: 5, height:'100vh'}}>
          <Routes>
-            <Route path='/' element={<Home/>}/>
+            <Route exact path='/' element={<ProtectedRoute><Home/></ProtectedRoute>}></Route>
             <Route path='/Login' element={<Login/>}/>
           </Routes>
       </Container>

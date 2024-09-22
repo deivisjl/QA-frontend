@@ -1,16 +1,11 @@
-import { Route, Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
-const ProtectedRoute = ({component: Component, ...props}) =>{
+const ProtectedRoute = ({children}) =>{
     const isLoggedIn = useSelector(state => state.authReducer.isLoggedIn)
 
     return (
-        <Route {...props} 
-            render={(props) => (
-                isLoggedIn
-                    ? <Component {...props}/>
-                    : <Redirect to='/login'/>
-            )}/>
+        !isLoggedIn ? <Navigate to='/login'/> : children
     );
 }
 
