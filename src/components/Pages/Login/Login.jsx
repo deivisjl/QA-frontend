@@ -11,12 +11,12 @@ import { Typography } from '@mui/material';
 
 import {useDispatch} from 'react-redux'
 import {login} from '../../../store/actions/auth'
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login(){
   
   const dispatch = useDispatch()
-  let history = useHistory();
+  const navigateTo = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,7 +48,7 @@ export default function Login(){
       return;
     }
     
-    dispatch(login({correo:email, password:password}, history))
+    dispatch(login({correo:email, password:password}, navigateTo))
   }
   return(
       <>

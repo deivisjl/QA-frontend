@@ -1,5 +1,4 @@
 import axios from 'axios'
-import store from '../store'
 import { logout } from '../store/actions/auth'
 
 const API = axios.create({
@@ -21,7 +20,7 @@ API.interceptors.response.use(
         }
         if(typeof err.response.data.error.name !== 'undefined'){
             if(err.response.data.error.name === 'TokenExpiredError'){
-                store.dispatch(logout())
+                logout()
                 throw err
             }
         }
