@@ -21,10 +21,11 @@ import {useDispatch } from 'react-redux'
 import { detailMessage } from '../../../store/actions/message';
 import {useSelector} from 'react-redux'
 import Swal from 'sweetalert2'
-import { Typography } from '@mui/material';
-import SistemaService from '../../../services/sistemaService';
+import { Badge, Typography } from '@mui/material';
+import EstadoService from '../../../services/estadoService';
+import { Height } from '@mui/icons-material';
 
-export default function ListarSistemas(props){
+export default function ListarEstados(props){
 
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
@@ -35,7 +36,7 @@ export default function ListarSistemas(props){
       Inicio
     </Link>,
     <Typography key="3" sx={{ color: 'text.primary' }}>
-      Sistemas
+      Estados
     </Typography>,
   ];
 
@@ -52,20 +53,20 @@ export default function ListarSistemas(props){
   const columns = [
       { id: 'id', name: 'Id' },
       { id: 'nombre', name: 'Nombre' },
-      { id: 'Proyecto.nombre', name: 'Proyecto' },
+      { id: 'color', name: 'Color' },
       { id: 'accion', name: 'Accion' }
   ]
 
-  const [sistemas, setSistemas] = useState([]);
+  const [estados, setEstados] = useState([]);
 
   useEffect(()=>{
     listarRegistros()
   },[])
 
   const listarRegistros = ()=>{
-    SistemaService.listar()
+    EstadoService.listar()
     .then(res => {
-      setSistemas(res)
+        setEstados(res)
     })
     .catch(error => {
       dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
@@ -85,11 +86,11 @@ export default function ListarSistemas(props){
   }
 
   const functionadd = () => {
-    navigateTo('/Sistemas/Crear')
+    navigateTo('/Estados/Crear')
   }
 
   const handleEdit = (code) => {
-    navigateTo('/Sistemas/Editar/'+code)
+    navigateTo('/Estados/Editar/'+code)
   }
 
   const handleRemove = (code) => {
@@ -106,7 +107,7 @@ export default function ListarSistemas(props){
       confirmButtonText: "Ok",
     }).then((result)=>{
       if (result.isConfirmed) {
-          SistemaService.eliminarSistema({id:code,usuario:currentUser.id})
+          EstadoService.eliminarEstado({id:code,usuario:currentUser.id})
             .then(res => {
               dispatch(detailMessage({detailMessage:res.message,color:'success',showMessage:true}))
               listarRegistros()
@@ -138,7 +139,7 @@ export default function ListarSistemas(props){
     <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
       <div style={{ margin: '1%' }}>
         <Typography sx={{ color: 'text.secondary', fontWeight:'bold' }}>
-            Listado de sistemas
+            Listado de estados
         </Typography>
       </div>
       <div style={{ margin: '1%' }}>
@@ -158,15 +159,19 @@ export default function ListarSistemas(props){
 
                   </TableHead>
                   <TableBody>
-                      {sistemas &&
-                          sistemas
+                      {estados &&
+                          estados
                               .slice(page * rowperpage, page * rowperpage + rowperpage)
                               .map((row, i) => {
                                   return (
                                       <TableRow key={i}>
                                           <TableCell>{row.id}</TableCell>
                                           <TableCell>{row.nombre}</TableCell>
-                                          <TableCell>{row.Proyecto.nombre}</TableCell>
+                                          <TableCell>
+                                            <Badge color="secondary" badgeContent=" " variant="dot">
+                                              <Box component="span" sx={{ bgcolor:`${row.color}`, width:'25px', height:'25px', borderRadius: '50%' }}></Box>
+                                            </Badge>
+                                          </TableCell>
                                           <TableCell>
                                               <Button size="small" onClick={e => { handleEdit(row.id) }} variant="contained" color="success">Editar</Button>
                                               <Button size="small" onClick={e => { handleRemove(row.id) }} variant="contained" color="error">Eliminar</Button>
@@ -183,7 +188,7 @@ export default function ListarSistemas(props){
               rowsPerPageOptions={[2, 5, 10, 20]}
               rowsPerPage={rowperpage}
               page={page}
-              count={sistemas.length}
+              count={estados.length}
               component={'div'}
               onPageChange={handlepagechange}
               onRowsPerPageChange={handlerowperpagechange}
