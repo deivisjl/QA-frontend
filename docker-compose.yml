@@ -8,12 +8,12 @@ services:
     image: frontend:1.0
     expose:
       - 80
-    container_name: backend
+    container_name: frontend
     restart: unless-stopped
     ports:
       - "80:80"
     networks:
-      - frontend-network
+      - frontend_network
 
 networks:
-  frontend-network:
+  frontend_network:
