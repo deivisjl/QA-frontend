@@ -15,8 +15,7 @@ export const login = (params, navigateTo) => dispatch => {
 
 
 export const logout = () => dispatch =>{
-    const navigateTo = useNavigate();
-    AuthService.logout()
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
     dispatch({ type: LOGOUT })
-    navigateTo('/login')
 }
