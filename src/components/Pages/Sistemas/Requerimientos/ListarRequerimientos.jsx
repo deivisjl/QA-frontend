@@ -14,17 +14,20 @@ import { useState } from 'react';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Link from '@mui/material/Link';
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import {useDispatch } from 'react-redux'
-import { detailMessage } from '../../../store/actions/message';
+//import { detailMessage } from '../../../../store/actions/message';
 import {useSelector} from 'react-redux'
 import Swal from 'sweetalert2'
 import { Typography } from '@mui/material';
-import SistemaService from '../../../services/sistemaService';
+//import SistemaService from '../../../services/sistemaService';
+import { detailMessage } from '../../../../store/actions/message';
+import SistemaService from '../../../../services/sistemaService';
+import RequerimientoService from '../../../../services/requerimientoService';
 
-export default function ListarSistemas(props){
+export default function ListarRequerimientos(props){
 
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
@@ -34,8 +37,11 @@ export default function ListarSistemas(props){
     <Link underline="hover" key="1" color="inherit" component={NavLink} to='/'>
       Inicio
     </Link>,
-    <Typography key="3" sx={{ color: 'text.primary' }}>
+    <Link underline="hover" key="2" color="inherit" component={NavLink} to='/Sistemas/Listar'>
       Sistemas
+    </Link>,
+    <Typography key="3" sx={{ color: 'text.primary' }}>
+      Requerimientos
     </Typography>,
   ];
 
@@ -56,12 +62,26 @@ export default function ListarSistemas(props){
       { id: 'requerimiento', name: 'Requerimientos' },
       { id: 'accion', name: 'Accion' }
   ]
+  
+  let { id } = useParams();
 
   const [sistemas, setSistemas] = useState([]);
+  const [nombreSistema,setNombreSistema] = useState('');
 
   useEffect(()=>{
+    detalleSistema()
     listarRegistros()
   },[])
+
+  const detalleSistema = () =>{
+    RequerimientoService.detalle({id:id})
+    .then(res => {
+      setNombreSistema(res.nombre.toUpperCase())
+    })
+    .catch(error => {
+      dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
+    })
+  }
 
   const listarRegistros = ()=>{
     SistemaService.listar()
@@ -143,7 +163,7 @@ export default function ListarSistemas(props){
     <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
       <div style={{ margin: '1%' }}>
         <Typography sx={{ color: 'text.secondary', fontWeight:'bold' }}>
-            Listado de sistemas
+            Listado de requerimientos de sistema {nombreSistema}
         </Typography>
       </div>
       <div style={{ margin: '1%' }}>

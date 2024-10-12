@@ -28,6 +28,7 @@ import EditarSistemas from './components/Pages/Sistemas/EditarSistema'
 import ListarEstados from './components/Pages/Estados/ListarEstados'
 import CrearEstados from './components/Pages/Estados/CrearEstados'
 import EditarEstados from './components/Pages/Estados/EditarEstados'
+import ListarRequerimientos from './components/Pages/Sistemas/Requerimientos/ListarRequerimientos'
 
 const navLinks = [
   {
@@ -97,13 +98,15 @@ function App() {
             <Route exact path='/Etapas/Crear' element={<ProtectedRoute><CrearEtapas/></ProtectedRoute>}></Route>
             <Route exact path='/Etapas/Editar/:id' element={<ProtectedRoute><EditarEtapa/></ProtectedRoute>}></Route>
 
+            <Route exact path='/Estados/Listar' element={<ProtectedRoute><ListarEstados/></ProtectedRoute>}></Route>
+            <Route exact path='/Estados/Crear' element={<ProtectedRoute><CrearEstados/></ProtectedRoute>}></Route>
+            <Route exact path='/Estados/Editar/:id' element={<ProtectedRoute><EditarEstados/></ProtectedRoute>}></Route>
+
             <Route exact path='/Sistemas/Listar' element={<ProtectedRoute><ListarSistemas/></ProtectedRoute>}></Route>
             <Route exact path='/Sistemas/Crear' element={<ProtectedRoute><CrearSistemas/></ProtectedRoute>}></Route>
             <Route exact path='/Sistemas/Editar/:id' element={<ProtectedRoute><EditarSistemas/></ProtectedRoute>}></Route>
 
-            <Route exact path='/Estados/Listar' element={<ProtectedRoute><ListarEstados/></ProtectedRoute>}></Route>
-            <Route exact path='/Estados/Crear' element={<ProtectedRoute><CrearEstados/></ProtectedRoute>}></Route>
-            <Route exact path='/Estados/Editar/:id' element={<ProtectedRoute><EditarEstados/></ProtectedRoute>}></Route>
+            <Route exact path='/Sistemas/Requerimientos/:id' element={<ProtectedRoute><ListarRequerimientos/></ProtectedRoute>}></Route>
 
             <Route path='/Login' element={<PublicRoute><Login/></PublicRoute>}/>
           </Routes>
