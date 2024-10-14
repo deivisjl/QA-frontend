@@ -29,6 +29,9 @@ import ListarEstados from './components/Pages/Estados/ListarEstados'
 import CrearEstados from './components/Pages/Estados/CrearEstados'
 import EditarEstados from './components/Pages/Estados/EditarEstados'
 import ListarRequerimientos from './components/Pages/Sistemas/Requerimientos/ListarRequerimientos'
+import CrearRequerimiento from './components/Pages/Sistemas/Requerimientos/CrearRequerimiento'
+import EditarRequerimiento from './components/Pages/Sistemas/Requerimientos/EditarRequerimiento'
+import ListarWorkspace from './components/Pages/Workspace/ListarWorkspace'
 
 const navLinks = [
   {
@@ -51,6 +54,9 @@ const navLinks = [
   },
   {
     title:"Estados", path:"/Estados/Listar", icon:<InboxIcon />
+  },
+  {
+    title:"Mis requerimientos", path:"/workspace", icon:<InboxIcon />
   },
 ];
 
@@ -107,6 +113,10 @@ function App() {
             <Route exact path='/Sistemas/Editar/:id' element={<ProtectedRoute><EditarSistemas/></ProtectedRoute>}></Route>
 
             <Route exact path='/Sistemas/Requerimientos/:id' element={<ProtectedRoute><ListarRequerimientos/></ProtectedRoute>}></Route>
+            <Route exact path='/Sistemas/Requerimientos/:id/Crear' element={<ProtectedRoute><CrearRequerimiento/></ProtectedRoute>}></Route>
+            <Route exact path='/Sistemas/Requerimientos/:id/Editar/:requerimiento' element={<ProtectedRoute><EditarRequerimiento/></ProtectedRoute>}></Route>
+
+            <Route exact path='/Workspace' element={<ProtectedRoute><ListarWorkspace/></ProtectedRoute>}></Route>
 
             <Route path='/Login' element={<PublicRoute><Login/></PublicRoute>}/>
           </Routes>

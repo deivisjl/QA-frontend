@@ -1,6 +1,25 @@
 import API from './api'
 
 const RequerimientoService = {
+    etapas:() =>{
+        return API.get('/requerimiento/etapas')
+        .then(({data}) =>{
+            return data
+        })
+        .catch(err =>{
+            console.log("Auth service err", err)
+        })
+    },
+
+    usuarios:() =>{
+        return API.get('/requerimiento/usuarios')
+        .then(({data}) =>{
+            return data
+        })
+        .catch(err =>{
+            console.log("Auth service err", err)
+        })
+    },
     detalle:(data) =>{
         return API.post('/requerimiento/detail',data)
         .then(({data}) =>{
@@ -37,7 +56,7 @@ const RequerimientoService = {
             })
     },
 
-    obtenerSistema:(data)=>{
+    obtenerRequerimiento:(data)=>{
         return API.post('/requerimiento/search',data)
             .then(({data}) =>{
                 return data

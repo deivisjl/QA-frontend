@@ -18,13 +18,10 @@ import { NavLink, useParams } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import {useDispatch } from 'react-redux'
-//import { detailMessage } from '../../../../store/actions/message';
 import {useSelector} from 'react-redux'
 import Swal from 'sweetalert2'
 import { Typography } from '@mui/material';
-//import SistemaService from '../../../services/sistemaService';
 import { detailMessage } from '../../../../store/actions/message';
-import SistemaService from '../../../../services/sistemaService';
 import RequerimientoService from '../../../../services/requerimientoService';
 
 export default function ListarRequerimientos(props){
@@ -58,14 +55,13 @@ export default function ListarRequerimientos(props){
   const columns = [
       { id: 'id', name: 'Id' },
       { id: 'nombre', name: 'Nombre' },
-      { id: 'Proyecto.nombre', name: 'Proyecto' },
-      { id: 'requerimiento', name: 'Requerimientos' },
+      { id: 'Usuario.nombre', name: 'Usuario asignado' },
       { id: 'accion', name: 'Accion' }
   ]
   
   let { id } = useParams();
 
-  const [sistemas, setSistemas] = useState([]);
+  const [requerimientos, setRequerimientos] = useState([]);
   const [nombreSistema,setNombreSistema] = useState('');
 
   useEffect(()=>{
@@ -84,9 +80,9 @@ export default function ListarRequerimientos(props){
   }
 
   const listarRegistros = ()=>{
-    SistemaService.listar()
+    RequerimientoService.listar()
     .then(res => {
-      setSistemas(res)
+      setRequerimientos(res)
     })
     .catch(error => {
       dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
@@ -106,11 +102,11 @@ export default function ListarRequerimientos(props){
   }
 
   const functionadd = () => {
-    navigateTo('/Sistemas/Crear')
+    navigateTo(`/Sistemas/Requerimientos/${id}/Crear`)
   }
 
   const handleEdit = (code) => {
-    navigateTo('/Sistemas/Editar/'+code)
+    navigateTo('/Sistemas/Requerimientos/'+id+'/Editar/'+code)
   }
 
   const handleRequirements = (code) => {
@@ -131,7 +127,7 @@ export default function ListarRequerimientos(props){
       confirmButtonText: "Ok",
     }).then((result)=>{
       if (result.isConfirmed) {
-          SistemaService.eliminarSistema({id:code,usuario:currentUser.id})
+          RequerimientoService.eliminarSistema({id:code,usuario:currentUser.id})
             .then(res => {
               dispatch(detailMessage({detailMessage:res.message,color:'success',showMessage:true}))
               listarRegistros()
@@ -183,20 +179,17 @@ export default function ListarRequerimientos(props){
 
                   </TableHead>
                   <TableBody>
-                      {sistemas &&
-                          sistemas
+                      {requerimientos &&
+                          requerimientos
                               .slice(page * rowperpage, page * rowperpage + rowperpage)
                               .map((row, i) => {
                                   return (
                                       <TableRow key={i}>
                                           <TableCell>{row.id}</TableCell>
                                           <TableCell>{row.nombre}</TableCell>
-                                          <TableCell>{row.Proyecto.nombre}</TableCell>
+                                          <TableCell>{row.Usuario.nombre}</TableCell>
                                           <TableCell>
-                                          <Button size="small" onClick={e => { handleRequirements(row.id) }} variant="contained" color="primary">Ver requerimientos</Button>
-                                          </TableCell>
-                                          <TableCell>
-                                              <Button size="small" onClick={e => { handleEdit(row.id) }} variant="contained" color="success">Editar</Button>
+                                              <Button size="small" onClick={e => { handleEdit(row.id) }} variant="contained" color="success">Detalle</Button>
                                               <Button size="small" onClick={e => { handleRemove(row.id) }} variant="contained" color="error">Eliminar</Button>
                                           </TableCell>
                                       </TableRow>
@@ -211,7 +204,7 @@ export default function ListarRequerimientos(props){
               rowsPerPageOptions={[2, 5, 10, 20]}
               rowsPerPage={rowperpage}
               page={page}
-              count={sistemas.length}
+              count={requerimientos.length}
               component={'div'}
               onPageChange={handlepagechange}
               onRowsPerPageChange={handlerowperpagechange}
