@@ -80,7 +80,7 @@ export default function ListarRequerimientos(props){
   }
 
   const listarRegistros = ()=>{
-    RequerimientoService.listar()
+    RequerimientoService.listar({id:id})
     .then(res => {
       setRequerimientos(res)
     })

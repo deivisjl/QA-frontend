@@ -39,8 +39,8 @@ const RequerimientoService = {
         })
     },
 
-    listar:()=>{
-        return API.get('/requerimiento/list')
+    listar:(data)=>{
+        return API.post('/requerimiento/list',data)
             .then(({data}) =>{
                 return data
             })
