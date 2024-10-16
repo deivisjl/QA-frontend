@@ -9,7 +9,17 @@ const WorkspaceService = {
             .catch(err =>{
                 console.log("Auth service err", err)
             })
-    }
+    },
+
+    obtenerModulo:(data)=>{
+        return API.post('/workspace/detalle-modulo',data)
+            .then(({data}) =>{
+                return data
+            })
+            .catch(err =>{
+                console.log("Auth service err", err)
+            })
+    },
 }
 
 export default WorkspaceService
