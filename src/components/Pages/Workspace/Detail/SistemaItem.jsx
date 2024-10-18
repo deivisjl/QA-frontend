@@ -16,7 +16,7 @@ setIsOpen(!isOpen);
 
 return (
 <List disablePadding>
-   <ListItemButton sx={{ pl: 5 }} key={item.nombre} button onClick={handleIsOpen}>
+   <ListItemButton sx={{ pl: 5 }} key={item.nombre} button="true" onClick={handleIsOpen}>
        <ListItemAvatar>
            <Avatar sx={{ backgroundColor:'#f50057'}}>
                <ComputerIcon />

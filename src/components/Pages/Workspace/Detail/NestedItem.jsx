@@ -16,7 +16,7 @@ const NestedItem = ({ item }) => {
 
   return (
     <List disablePadding>
-        <ListItemButton key={item.nombre} button onClick={handleIsOpen}>
+        <ListItemButton key={item.nombre} button="true" onClick={handleIsOpen}>
             <ListItemAvatar>
                 <Avatar sx={{ backgroundColor:'#1769aa'}}>
                     <WorkIcon />

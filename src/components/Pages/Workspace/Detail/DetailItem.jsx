@@ -41,7 +41,7 @@ const obtenerDetalle = () => {
 
 return (
 <List disablePadding>
-   <ListItemButton sx={{ pl: 8 }} key={item.nombre} button onClick={handleIsOpen}>
+   <ListItemButton sx={{ pl: 8 }} key={item.nombre} button="true" onClick={handleIsOpen}>
        <ListItemAvatar>
            <Avatar sx={{ backgroundColor:'#357a38'}}>
                <AutoStoriesIcon />
@@ -54,7 +54,7 @@ return (
    <Collapse in={isOpen} timeout="auto" unmountOnExit>
        <List disablePadding>
            {detalles && detalles.map((detalle) => (
-                <EtapaItem key={detalle.Etapa.nombre} item={detalle}/>
+                <EtapaItem key={detalle.Etapa.nombre} item={detalle} fn={obtenerDetalle}/>
            ))}
        </List>
    </Collapse>
