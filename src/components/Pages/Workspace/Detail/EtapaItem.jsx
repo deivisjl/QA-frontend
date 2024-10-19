@@ -50,7 +50,7 @@ return (
    <Collapse in={isOpen} timeout="auto" unmountOnExit>
        <List disablePadding>
            {item.Tareas && item.Tareas.map((tarea) => {
-                return (<TaskItem key={tarea.nombre} item={tarea}/>)
+                return (<TaskItem key={tarea.nombre} item={tarea} fn={fn}/>)
            })}
        </List>
    </Collapse>

@@ -12,6 +12,7 @@ import EstadoService from '../../../services/estadoService';
 import { useDispatch } from 'react-redux';
 import { CardActions, CardContent, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
+import TareaService from '../../../services/tareaService';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -22,7 +23,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function ConfirmationDialog(props) {
+export default function ConfirmationDialogEdit(props) {
     const dispatch = useDispatch();
 
     const { onClose, value: valueProp, open, message, ...other } = props;
@@ -56,12 +57,22 @@ export default function ConfirmationDialog(props) {
       EstadoService.listar()
       .then(res => {
           setEstados(res)
-          setNombre('')
-          setEstado('')
+          cargarTarea()
       })
       .catch(error => {
         dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
       })
+    }
+
+    const cargarTarea = () => {
+        TareaService.obtenerTarea({id:valueProp.id})
+        .then(res => {
+            setNombre(res.nombre)
+            setEstado(res.estadoId)
+        })
+        .catch(error => {
+          dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
+        })
     }
 
     const handleChange = (event) =>{
@@ -92,22 +103,23 @@ export default function ConfirmationDialog(props) {
       }
 
       if(estado == '')
-      {
-        setErrorEstado({
-            error:true,
-            message:"El estado es requerido",
-        })
-        return
-      }
-      else
-      {
-        setErrorEstado({
-            error:false,
-            message:"",
-        })
-      }
+        {
+          setErrorEstado({
+              error:true,
+              message:"El estado es requerido",
+          })
+          return
+        }
+        else
+        {
+          setErrorEstado({
+              error:false,
+              message:"",
+          })
+        }
 
-      let resp = {moduloEtapa:value.id,nombre,estado}
+      let resp = {id:valueProp.id,nombre,estado}
+
       onClose(resp);
     };
   
@@ -131,7 +143,7 @@ export default function ConfirmationDialog(props) {
             >
             <CloseIcon />
           </IconButton>
-            Agregar nueva tarea
+            Editar tarea
         </DialogTitle>
         <DialogContent  sx={{ display: 'flex', justifyContent:'center' }} dividers>
         <Box component="form" onSubmit={handleSubmit} sx={{ width:'100%' }}>
@@ -163,7 +175,7 @@ export default function ConfirmationDialog(props) {
             </CardContent>
             <CardActions> 
               <Box sx={{ mx: 'auto', width: 'auto' }}>
-                <Button type="submit" variant="contained">Guardar</Button>
+                <Button type="submit" variant="contained" color="success">Actualizar</Button>
               </Box>
             </CardActions>
           </Box>  
@@ -172,7 +184,7 @@ export default function ConfirmationDialog(props) {
     );
   }
 
-  ConfirmationDialog.propTypes = {
+  ConfirmationDialogEdit.propTypes = {
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired,
     value: PropTypes.any.isRequired,
