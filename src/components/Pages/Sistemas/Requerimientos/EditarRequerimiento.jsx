@@ -24,6 +24,7 @@ import { useEffect } from 'react';
 import SistemaService from '../../../../services/sistemaService';
 import ProyectoService from '../../../../services/proyectoService';
 import RequerimientoService from '../../../../services/requerimientoService';
+import EstadoService from '../../../../services/estadoService';
 
 export default function EditarRequerimiento(){
 
@@ -53,16 +54,30 @@ export default function EditarRequerimiento(){
   const [etapas, setEtapas] = useState([]);
   const [usuarioId, setUsuarioId] = useState('');
   const [etapasSeleccionadas, setEtapasSeleccionadas] = useState([]);
+  const [estados, setEstados] = useState([]);
+  const [estado, setEstado] = useState('');
 
   useEffect(()=>{
     listarRegistros()
+    listarEstados()
   },[])
+
+  const listarEstados = () => {
+    EstadoService.listar()
+    .then(res => {
+      setEstados(res)
+    })
+    .catch(error => {
+      dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
+    })
+  }
 
   const cargarRegistro = () =>{
     RequerimientoService.obtenerRequerimiento({id,requerimiento})
         .then(res => {
             setNombre(res.nombre)
             setUsuarioId(res.usuarioId)
+            setEstado(res.estadoId)
             
             res.ModuloEtapas.map(item => {
               setEtapasSeleccionadas([...etapasSeleccionadas, {id: `${item.etapaId}`}])
@@ -100,6 +115,10 @@ export default function EditarRequerimiento(){
     setProyecto(event.target.value);
   };
 
+  const handleChangeEstado = (event) => {
+    setEstado(event.target.value)
+  }
+
   const handleChangeCheckbox = (event) => { 
     
     if(event.target.checked)
@@ -125,6 +144,11 @@ export default function EditarRequerimiento(){
     }
   }
 
+  const [errorEstado, setErrorEstado] = useState({
+    error:false,
+    message:"",
+  });
+
   const [errorNombre, setErrorNombre] = useState({
     error:false,
     message:"",
@@ -135,6 +159,11 @@ export default function EditarRequerimiento(){
     message:"",
   });
 
+  const validateEstado = (estado) => {
+    return estado != undefined && estado > 0
+  }
+
+
   const [errorEtapas, setErrorEtapas] = useState({
     error:false,
     message:"",
@@ -144,8 +173,8 @@ export default function EditarRequerimiento(){
     return nombre != ''
   }
 
-  const validateUsuario = (proyecto) => {
-    return proyecto != undefined && proyecto > 0
+  const validateUsuario = (usuarioId) => {
+    return usuarioId != undefined && usuarioId > 0
   }
 
   const validateEtapas = (etapas) => {
@@ -154,8 +183,6 @@ export default function EditarRequerimiento(){
 
   const handleSubmit = (e) =>{
     e.preventDefault();
-
-    return;
 
     if(validateNombre(nombre))
     {
@@ -173,7 +200,23 @@ export default function EditarRequerimiento(){
           return;
     }
 
-    if(validateUsuario(proyecto))
+    if(validateEstado(estado))
+      {
+          setErrorEstado({
+              error:false,
+              message:"",
+            })
+      }
+      else
+      {
+          setErrorEstado({
+              error:true,
+              message:"El estado inicial es requerido",
+            })
+            return;
+      }
+
+    if(validateUsuario(usuarioId))
         {
             setErrorUsuario({
                 error:false,
@@ -188,27 +231,11 @@ export default function EditarRequerimiento(){
               })
               return;
         }
-
-        if(validateEtapas())
-        {
-              setErrorEtapas({
-                  error:false,
-                  message:"",
-                })
-          }
-          else
-          {
-              setErrorEtapas({
-                  error:true,
-                  message:"Debe elegir al menos una etapa",
-                })
-                return;
-          }
     
-    SistemaService.actualizar({id:id,nombre,proyecto,usuario:currentUser.id})
+    RequerimientoService.actualizar({id:id,nombre,usuarioId,estado,usuario:currentUser.id})
         .then(res => {
           dispatch(detailMessage({detailMessage:res.message,color:'success',showMessage:true}))
-          navigateTo('/Sistemas/Listar')
+          navigateTo(rutaAnterior)
         })
         .catch(error => {
           dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
@@ -238,7 +265,7 @@ export default function EditarRequerimiento(){
                       onChange={(e)=> setNombre(e.target.value)}
                       fullWidth sx={{pb:2}}>
                     </TextField>
-                    <FormControl fullWidth error={errorUsuario.error}>
+                    <FormControl fullWidth error={errorUsuario.error} sx={{pb:2}}>
                         <InputLabel id="select-proyecto-id">Usuario Asignado</InputLabel>
                         <Select
                         labelId="select-proyecto-id"
@@ -253,14 +280,20 @@ export default function EditarRequerimiento(){
                         </Select>
                         {errorUsuario ? (<FormHelperText error>{errorUsuario.message}</FormHelperText>) : null}
                     </FormControl>
-                    <FormControl error={errorEtapas.error}>
-                      <FormLabel id="checkboxs-etapas">Seleccionar Etapas</FormLabel>
-                      <FormGroup>
-                        {etapas && etapas.map(function(etapa){
-                          return <FormControlLabel key={etapa.id} control={ <Checkbox key={etapa.nombre} checked={ !!(etapasSeleccionadas.find((item) => item.id.toString() === etapa.id.toString())) ? true: false } onChange={handleChangeCheckbox} name={etapa.id.toString()} />} label={etapa.nombre}/>
+                    <FormControl fullWidth error={errorEstado.error} sx={{pb:2}}>
+                        <InputLabel id="select-estado-id">Seleccionar estado</InputLabel>
+                        <Select
+                        labelId="select-estado-id"
+                        id="select-estado"
+                        value={estado}
+                        label="Seleccionar estado"
+                        onChange={handleChangeEstado}
+                        >
+                        {estados && estados.map(function(option){
+                            return (<MenuItem key={option.id} value={option.id}>{option.nombre}</MenuItem>)
                         })}
-                      </FormGroup>
-                      {errorEtapas ? (<FormHelperText error>{errorEtapas.message}</FormHelperText>) : null}
+                        </Select>
+                        {errorUsuario ? (<FormHelperText error>{errorUsuario.message}</FormHelperText>) : null}
                     </FormControl>
                   </CardContent>
                   <CardActions> 

@@ -23,6 +23,7 @@ import Select from '@mui/material/Select';
 import { useEffect } from 'react';
 import SistemaService from '../../../../services/sistemaService';
 import RequerimientoService from '../../../../services/requerimientoService';
+import EstadoService from '../../../../services/estadoService';
 
 export default function CrearRequerimiento(){
 
@@ -52,12 +53,24 @@ export default function CrearRequerimiento(){
   const [etapas, setEtapas] = useState([]);
   const [etapasSeleccionadas, setEtapasSeleccionadas] = useState([]);
   const [usuario, setUsuario] = useState('');
+  const [estados, setEstados] = useState([]);
+  const [estado, setEstado] = useState('');
 
   useEffect(()=>{
     listarUsuarios()
     listarEtapas()
+    listarEstados()
   },[])
 
+  const listarEstados = () => {
+    EstadoService.listar()
+    .then(res => {
+      setEstados(res)
+    })
+    .catch(error => {
+      dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
+    })
+  }
   const listarEtapas = ()=>{
     RequerimientoService.etapas()
     .then(res => {
@@ -81,6 +94,10 @@ export default function CrearRequerimiento(){
   const handleChange = (event) => {
     setUsuario(event.target.value);
   };
+
+  const handleChangeEstado = (event) => {
+    setEstado(event.target.value)
+  }
 
   const handleChangeCheckbox = (event) => { 
 
@@ -122,12 +139,21 @@ export default function CrearRequerimiento(){
     message:"",
   });
 
+  const [errorEstado, setErrorEstado] = useState({
+    error:false,
+    message:"",
+  });
+
   const validateNombre = (nombre) => {
     return nombre != ''
   }
 
   const validateUsuario = (usuario) => {
     return usuario != undefined && usuario > 0
+  }
+
+  const validateEstado = (estado) => {
+    return estado != undefined && estado > 0
   }
 
   const validateEtapas = (etapas) => {
@@ -169,6 +195,22 @@ export default function CrearRequerimiento(){
               return;
         }
       
+        if(validateEstado(estado))
+          {
+              setErrorEstado({
+                  error:false,
+                  message:"",
+                })
+          }
+          else
+          {
+              setErrorEstado({
+                  error:true,
+                  message:"El estado inicial es requerido",
+                })
+                return;
+          }
+      
       if(validateEtapas())
       {
             setErrorEtapas({
@@ -185,7 +227,7 @@ export default function CrearRequerimiento(){
               return;
         }
     
-    RequerimientoService.registrar({nombre,asignado:usuario,etapas:etapasSeleccionadas,sistema:id,usuario:currentUser.id})
+    RequerimientoService.registrar({nombre,asignado:usuario,etapas:etapasSeleccionadas,estadoId:estado,sistema:id,usuario:currentUser.id})
         .then(res => {
           dispatch(detailMessage({detailMessage:res.message,color:'success',showMessage:true}))
           navigateTo(rutaAnterior)
@@ -218,7 +260,7 @@ export default function CrearRequerimiento(){
                       onChange={(e)=> setNombre(e.target.value)}
                       fullWidth sx={{pb:2}}>
                     </TextField>
-                    <FormControl fullWidth error={errorUsuario.error}>
+                    <FormControl fullWidth sx={{pb:2}} error={errorUsuario.error}>
                         <InputLabel id="select-proyecto-id">Asignar usuario</InputLabel>
                         <Select
                         labelId="select-proyecto-id"
@@ -228,6 +270,21 @@ export default function CrearRequerimiento(){
                         onChange={handleChange}
                         >
                         {usuarios && usuarios.map(function(option){
+                            return (<MenuItem key={option.id} value={option.id}>{option.nombre}</MenuItem>)
+                        })}
+                        </Select>
+                        {errorUsuario ? (<FormHelperText error>{errorUsuario.message}</FormHelperText>) : null}
+                    </FormControl>
+                    <FormControl fullWidth error={errorEstado.error}>
+                        <InputLabel id="select-estado-id">Seleccionar estado</InputLabel>
+                        <Select
+                        labelId="select-estado-id"
+                        id="select-estado"
+                        value={estado}
+                        label="Seleccionar estado"
+                        onChange={handleChangeEstado}
+                        >
+                        {estados && estados.map(function(option){
                             return (<MenuItem key={option.id} value={option.id}>{option.nombre}</MenuItem>)
                         })}
                         </Select>

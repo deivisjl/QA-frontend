@@ -66,6 +66,26 @@ const RequerimientoService = {
             })
     },
 
+    obtenerEstadoRequerimiento:(data)=>{
+        return API.post('/requerimiento/getEstado',data)
+            .then(({data}) =>{
+                return data
+            })
+            .catch(err =>{
+                console.log("Auth service err", err)
+            })
+    },
+
+    actualizarEstado:(data) =>{
+        return API.post('/requerimiento/setEstado',data)
+            .then(({data}) =>{
+                return data
+            })
+            .catch(err =>{
+                console.log("Auth service err", err)
+            })
+    },
+
     eliminarSistema:(data)=>{
         return API.post('/requerimiento/delete',data)
             .then(({data}) =>{

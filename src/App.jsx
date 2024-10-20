@@ -35,7 +35,7 @@ import ListarWorkspace from './components/Pages/Workspace/ListarWorkspace'
 
 const navLinks = [
   {
-    title:"Home", path:"/", icon:<InboxIcon />
+    title:"Inicio", path:"/", icon:<InboxIcon />
   },
   {
     title:"Login", path:"/Login", icon:<DraftsIcon />

@@ -7,12 +7,16 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import WorkIcon from '@mui/icons-material/Work';
 import SistemaItem from "./SistemaItem";
 
-const NestedItem = ({ item }) => {
+const NestedItem = ({ item, fn }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
   };
+
+  const handleEditEstado = () => {
+    fn()
+  }
 
   return (
     <List disablePadding>
@@ -29,7 +33,7 @@ const NestedItem = ({ item }) => {
         <Collapse in={isOpen} timeout="auto" unmountOnExit>
             <List disablePadding>
                 {item.Sistemas && item.Sistemas.map((sistema) => (
-                    <SistemaItem key={sistema.nombre} item={sistema} />
+                    <SistemaItem key={sistema.nombre} item={sistema} fn={handleEditEstado}/>
                 ))}
             </List>
         </Collapse>

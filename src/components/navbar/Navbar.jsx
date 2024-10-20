@@ -27,13 +27,13 @@ export default function Navbar({navLinks}){
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
+            App QA
           </Typography>
           
           <Box sx={{ display: {xs:"none", sm:"block"} }}>
-            {navLinks.map((item) => (
+              {/* {navLinks.map((item) => (
                     <Button color="inherit" key={item.title} component={NavLink} to={item.path}>{item.title}</Button>
-                ))}
+                ))} */}
           </Box>
         </Toolbar>
         </AppBar>

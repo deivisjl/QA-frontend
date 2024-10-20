@@ -7,12 +7,16 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ComputerIcon from '@mui/icons-material/Computer';
 import DetailItem from "./DetailItem";
 
-const SistemaItem = ({ item }) => {
+const SistemaItem = ({ item, fn }) => {
 const [isOpen, setIsOpen] = useState(false);
 
 const handleIsOpen = () => {
 setIsOpen(!isOpen);
 };
+
+const handleEditEstadoRequerimiento = () => {
+    fn()
+}
 
 return (
 <List disablePadding>
@@ -29,7 +33,7 @@ return (
    <Collapse in={isOpen} timeout="auto" unmountOnExit>
        <List disablePadding>
            {item.Modulos && item.Modulos.map((modulo)=>{
-                return (<DetailItem key={modulo.nombre} item={modulo} />)
+                return (<DetailItem key={modulo.nombre} item={modulo} fn={handleEditEstadoRequerimiento}/>)
            })}
        </List>
    </Collapse>

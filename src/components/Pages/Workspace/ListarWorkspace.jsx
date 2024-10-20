@@ -109,7 +109,7 @@ export default function ListarWorkspace(props){
       <div>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }} disablePadding>
         {requerimientos.length > 0 && requerimientos.map((item) => (
-          <NestedItem key={item.nombre} item={item}/>
+          <NestedItem key={item.nombre} item={item} fn={listarRegistros}/>
         ))}
       </List>  
       </div>
