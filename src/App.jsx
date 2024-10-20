@@ -32,6 +32,7 @@ import ListarRequerimientos from './components/Pages/Sistemas/Requerimientos/Lis
 import CrearRequerimiento from './components/Pages/Sistemas/Requerimientos/CrearRequerimiento'
 import EditarRequerimiento from './components/Pages/Sistemas/Requerimientos/EditarRequerimiento'
 import ListarWorkspace from './components/Pages/Workspace/ListarWorkspace'
+import MostrarReporte from './components/Pages/Reportes/MostrarReporte'
 
 const navLinks = [
   {
@@ -57,6 +58,9 @@ const navLinks = [
   },
   {
     title:"Mis requerimientos", path:"/workspace", icon:<InboxIcon />
+  },
+  {
+    title:"Reportes", path:"/reportes", icon:<InboxIcon />
   },
 ];
 
@@ -117,6 +121,7 @@ function App() {
             <Route exact path='/Sistemas/Requerimientos/:id/Editar/:requerimiento' element={<ProtectedRoute><EditarRequerimiento/></ProtectedRoute>}></Route>
 
             <Route exact path='/Workspace' element={<ProtectedRoute><ListarWorkspace/></ProtectedRoute>}></Route>
+            <Route exact path='/reportes' element={<ProtectedRoute><MostrarReporte/></ProtectedRoute>}></Route>
 
             <Route path='/Login' element={<PublicRoute><Login/></PublicRoute>}/>
           </Routes>
