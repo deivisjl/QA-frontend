@@ -43,13 +43,16 @@ const AuthService = {
         API.defaults.headers['Authorization'] = ''
         localStorage.removeItem('user')
         localStorage.removeItem('token')
+        localStorage.removeItem('menu')
     }
 }
 
-const setHeadersAndStorage = ({user, token}) =>{
+const setHeadersAndStorage = ({user, token, permisos}) =>{
     API.defaults.headers['Authorization'] = `Bearer ${token}`
     localStorage.setItem('user', JSON.stringify(user))
     localStorage.setItem('token', token)
+
+    localStorage.setItem('menu',JSON.stringify(permisos))
 }
 
 export default AuthService

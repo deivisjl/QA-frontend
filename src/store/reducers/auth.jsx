@@ -3,6 +3,7 @@ import {LOGIN, LOGOUT} from '../types/index'
 const initialState = {
     user:JSON.parse(localStorage.getItem('user')),
     token:localStorage.getItem('token') || '',
+    menu:JSON.parse(localStorage.getItem('menu')) || [],
     isLoggedIn: localStorage.getItem('user') ? true : false,
 }
 
@@ -15,6 +16,7 @@ const authReducer = (state = initialState, action) =>{
                 ...state,
                 user:payload.user,
                 token:payload.token,
+                menu:payload.permisos,
                 isLoggedIn:true
             }
 
@@ -23,6 +25,7 @@ const authReducer = (state = initialState, action) =>{
                 ...state,
                 user:{},
                 token:'',
+                menu:[],
                 isLoggedIn:false
             }
             

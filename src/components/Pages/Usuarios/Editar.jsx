@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
 import { useState } from 'react';
-import { Typography } from '@mui/material';
+import { Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Typography } from '@mui/material';
 import UsuarioService from '../../../services/usuarioService';
 import Link from '@mui/material/Link';
 import { NavLink, useParams  } from "react-router-dom";
@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import {useDispatch } from 'react-redux'
 import { detailMessage } from '../../../store/actions/message';
 import { useEffect } from 'react';
+import RolService from '../../../services/rolService';
 
 export default function Editar(){
 
@@ -45,17 +46,61 @@ export default function Editar(){
     .catch(error => {
       dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
     })
+
+    RolService.listar()
+    .then(res => {
+        setRoles(res)
+    })
+    .catch(error => {
+      dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
+    })
   },[])
 
   const [nombre, setNombre] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [rolesSeleccionados, setRolesSeleccionados] = useState([]);
 
   const [errorNombre, setErrorNombre] = useState({
     error:false,
     message:"",
   });
 
+  const [errorRoles, setErrorRoles] = useState({
+    error:false,
+    message:"",
+  });
+
   const validateNombre = (nombre) => {
     return nombre != ''
+  }
+
+  const validateRoles = (rolesSeleccionados) => {
+    return rolesSeleccionados && rolesSeleccionados.length > 0
+  }
+
+  const handleChangeCheckbox = (event) => { 
+
+    if(event.target.checked)
+    {
+      if(rolesSeleccionados.length > 0)
+      {
+        setRolesSeleccionados([...rolesSeleccionados,{id: event.target.name}])
+        return;
+      }
+      
+      setRolesSeleccionados([{id: event.target.name}])
+      return;
+    }
+    
+    if(!event.target.checked)
+    {
+      let obj = rolesSeleccionados.filter(function(item){
+        return item.id !== event.target.name
+      })
+
+      setRolesSeleccionados(obj); 
+      return;
+    }
   }
 
   const handleSubmit = (e) =>{
@@ -76,8 +121,24 @@ export default function Editar(){
           })
           return;
     }
+
+    if(validateRoles(rolesSeleccionados))
+      {
+          setErrorRoles({
+              error:false,
+              message:"",
+              })
+      }
+      else
+      {
+          setErrorRoles({
+              error:true,
+              message:"Debe selecciona al menos un rol",
+              })
+              return;
+      }
     
-    UsuarioService.actualizar({id,nombre})
+    UsuarioService.actualizar({id,nombre,roles:rolesSeleccionados})
         .then(res => {
           dispatch(detailMessage({detailMessage:res.message,color:'success',showMessage:true}))
           navigateTo('/Usuarios/Listar')
@@ -120,6 +181,15 @@ export default function Editar(){
                       onChange={(e)=> setNombre(e.target.value)}
                       fullWidth sx={{pb:2}}>
                     </TextField>
+                    <FormControl error={errorRoles.error}>
+                      <FormLabel id="checkboxs-etapas">Seleccionar Roles</FormLabel>
+                      <FormGroup>
+                        {roles && roles.map(function(item){
+                          return <FormControlLabel key={item.id} control={ <Checkbox key={item.nombre} onChange={handleChangeCheckbox} name={item.id.toString()} />} label={item.nombre}/>
+                        })}
+                      </FormGroup>
+                      {errorRoles ? (<FormHelperText error>{errorRoles.message}</FormHelperText>) : null}
+                    </FormControl>
                   </CardContent>
                   <CardActions> 
                     <Box sx={{ mx: 'auto', width: 'auto' }}>

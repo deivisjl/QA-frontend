@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
 import { useState } from 'react';
-import { Typography } from '@mui/material';
+import { Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Typography } from '@mui/material';
 import UsuarioService from '../../../services/usuarioService';
 import Link from '@mui/material/Link';
 import { NavLink } from "react-router-dom";
@@ -16,6 +16,8 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useNavigate } from 'react-router-dom';
 import {useDispatch } from 'react-redux'
 import { detailMessage } from '../../../store/actions/message';
+import { useEffect } from 'react';
+import RolService from '../../../services/rolService';
 
 export default function Crear(){
 
@@ -38,6 +40,18 @@ export default function Crear(){
   const [nombre, setNombre] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [rolesSeleccionados, setRolesSeleccionados] = useState([]);
+
+  useEffect(()=>{
+    RolService.listar()
+    .then(res => {
+        setRoles(res)
+    })
+    .catch(error => {
+      dispatch(detailMessage({detailMessage:error.response,color:'error',showMessage:true}))
+    })
+  },[])
 
   const [errorCorreo, setErrorCorreo] = useState({
     error:false,
@@ -54,6 +68,11 @@ export default function Crear(){
     message:"",
   });
 
+  const [errorRoles, setErrorRoles] = useState({
+    error:false,
+    message:"",
+  });
+
   const validateEmail = (email) => {
     const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     return regex.test(email);
@@ -65,6 +84,35 @@ export default function Crear(){
 
   const validatePassword = (password, repeatPassword) => {
     return (password != '' && password === repeatPassword)
+  }
+
+  const validateRoles = (rolesSeleccionados) => {
+    return rolesSeleccionados && rolesSeleccionados.length > 0
+  }
+
+  const handleChangeCheckbox = (event) => { 
+
+    if(event.target.checked)
+    {
+      if(rolesSeleccionados.length > 0)
+      {
+        setRolesSeleccionados([...rolesSeleccionados,{id: event.target.name}])
+        return;
+      }
+      
+      setRolesSeleccionados([{id: event.target.name}])
+      return;
+    }
+    
+    if(!event.target.checked)
+    {
+      let obj = rolesSeleccionados.filter(function(item){
+        return item.id !== event.target.name
+      })
+
+      setRolesSeleccionados(obj); 
+      return;
+    }
   }
 
   const handleSubmit = (e) =>{
@@ -116,8 +164,24 @@ export default function Crear(){
             })
             return;
     }
+
+    if(validateRoles(rolesSeleccionados))
+      {
+          setErrorRoles({
+              error:false,
+              message:"",
+              })
+      }
+      else
+      {
+          setErrorRoles({
+              error:true,
+              message:"Debe selecciona al menos un rol",
+              })
+              return;
+      }
     
-    UsuarioService.registrar({correo,nombre,password})
+    UsuarioService.registrar({correo,nombre,password,roles:rolesSeleccionados})
         .then(res => {
           dispatch(detailMessage({detailMessage:res.message,color:'success',showMessage:true}))
           navigateTo('/Usuarios/Listar')
@@ -177,6 +241,15 @@ export default function Crear(){
                       onChange={(e)=> setRepeatPassword(e.target.value)}
                       fullWidth sx={{pb:2}}>
                     </TextField>
+                    <FormControl error={errorRoles.error}>
+                      <FormLabel id="checkboxs-etapas">Seleccionar Roles</FormLabel>
+                      <FormGroup>
+                        {roles && roles.map(function(item){
+                          return <FormControlLabel key={item.id} control={ <Checkbox key={item.nombre} onChange={handleChangeCheckbox} name={item.id.toString()} />} label={item.nombre}/>
+                        })}
+                      </FormGroup>
+                      {errorRoles ? (<FormHelperText error>{errorRoles.message}</FormHelperText>) : null}
+                    </FormControl>
                   </CardContent>
                   <CardActions> 
                     <Box sx={{ mx: 'auto', width: 'auto' }}>

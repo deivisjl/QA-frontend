@@ -53,7 +53,7 @@ export default function Listar(props){
       { id: 'id', name: 'Id' },
       { id: 'nombre', name: 'Nombre' },
       { id: 'correo', name: 'Correo electrónico' },
-      { id: 'estado', name: 'Estado' },
+      { id: 'roles', name: 'Roles' },
       { id: 'accion', name: 'Accion' }
   ]
 
@@ -173,7 +173,13 @@ export default function Listar(props){
                                           <TableCell>{row.id}</TableCell>
                                           <TableCell>{row.nombre}</TableCell>
                                           <TableCell>{row.correo}</TableCell>
-                                          <TableCell>{row.estado}</TableCell>
+                                          <TableCell>
+                                            {
+                                              row.UsuarioRoles && row.UsuarioRoles.map((item,i) => {
+                                                return (<span key={i}>{item.Role.nombre},</span>)
+                                              })
+                                            }
+                                            </TableCell>
                                           <TableCell>
                                               <Button size="small" onClick={e => { handleEdit(row.id) }} variant="contained" color="success">Editar</Button>
                                               <Button size="small" onClick={e => { handleRemove(row.id) }} variant="contained" color="error">Eliminar</Button>

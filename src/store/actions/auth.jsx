@@ -17,5 +17,6 @@ export const login = (params, navigateTo) => dispatch => {
 export const logout = () => dispatch =>{
     localStorage.removeItem('user')
     localStorage.removeItem('token')
+    localStorage.removeItem('menu')
     dispatch({ type: LOGOUT })
 }

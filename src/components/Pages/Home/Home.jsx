@@ -1,7 +1,11 @@
+import { Box } from "@mui/material";
+
 export default function Home(){
     return(
         <>
-            <h1>Home</h1>
+            <Box sx={{ display:'flex',justifyContent:'center',alignItems:'center'}}>
+                <h1>Sistema de Administración de Requerimientos</h1>
+            </Box>
         </>
     )
 }
