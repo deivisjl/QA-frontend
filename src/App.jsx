@@ -33,13 +33,22 @@ import CrearRequerimiento from './components/Pages/Sistemas/Requerimientos/Crear
 import EditarRequerimiento from './components/Pages/Sistemas/Requerimientos/EditarRequerimiento'
 import ListarWorkspace from './components/Pages/Workspace/ListarWorkspace'
 import MostrarReporte from './components/Pages/Reportes/MostrarReporte'
+import ListarPermisos from './components/Pages/Permisos/ListarPermisos'
+import CrearPermiso from './components/Pages/Permisos/CrearPermiso'
+import EditarPermiso from './components/Pages/Permisos/EditarPermiso'
+import ListarRoles from './components/Pages/Roles/ListarRoles'
+import CrearRoles from './components/Pages/Roles/CrearRoles'
+import EditarRoles from './components/Pages/Roles/EditarRoles'
 
 const navLinks = [
   {
     title:"Inicio", path:"/", icon:<InboxIcon />
   },
   {
-    title:"Login", path:"/Login", icon:<DraftsIcon />
+    title:"Permisos", path:"/Permisos/Listar", icon:<DraftsIcon />
+  },
+  {
+    title:"Roles", path:"/Roles/Listar", icon:<DraftsIcon />
   },
   {
     title:"Usuarios", path:"/Usuarios/Listar", icon:<InboxIcon />
@@ -122,6 +131,14 @@ function App() {
 
             <Route exact path='/Workspace' element={<ProtectedRoute><ListarWorkspace/></ProtectedRoute>}></Route>
             <Route exact path='/reportes' element={<ProtectedRoute><MostrarReporte/></ProtectedRoute>}></Route>
+
+            <Route exact path='/Permisos/Listar' element={<ProtectedRoute><ListarPermisos/></ProtectedRoute>}></Route>
+            <Route exact path='/Permisos/Crear' element={<ProtectedRoute><CrearPermiso/></ProtectedRoute>}></Route>
+            <Route exact path='/Permisos/Editar/:id' element={<ProtectedRoute><EditarPermiso/></ProtectedRoute>}></Route>
+
+            <Route exact path='/Roles/Listar' element={<ProtectedRoute><ListarRoles/></ProtectedRoute>}></Route>
+            <Route exact path='/Roles/Crear' element={<ProtectedRoute><CrearRoles/></ProtectedRoute>}></Route>
+            <Route exact path='/Roles/Editar/:id' element={<ProtectedRoute><EditarRoles/></ProtectedRoute>}></Route>
 
             <Route path='/Login' element={<PublicRoute><Login/></PublicRoute>}/>
           </Routes>
